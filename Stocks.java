@@ -4,7 +4,24 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+class Intro extends Thread{
+    private String Design =  "*";
+    public void run(){
+        int i = 0; 
+        while(i < 10){
+            System.out.print(Design);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+            i++;
+            
+        }
+    }
 
+    
+}
 
 
 class RegistrationUser {
@@ -140,9 +157,11 @@ class Menu extends Thread{
 
 
 public class Stocks {
+    
     private static RegistrationUser newUser;
     public static String hash(String input) {
         try {
+
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());
             StringBuilder hexString = new StringBuilder();
@@ -158,6 +177,7 @@ public class Stocks {
 
     private static void getUserData() {
         Scanner sc = new Scanner(System.in);
+        System.out.println("");
         System.out.print("Enter your name: ");
         String name = sc.nextLine();
         System.out.print("Enter Your Email: ");
@@ -167,9 +187,36 @@ public class Stocks {
         sc.close();
         newUser = new RegistrationUser(name, email, password);
     }
+    public static void Design (){
+        int i = 0;
+        while(i < 100){
+            System.out.print("*");
+            i++;
+        }
+    }
 
+    
     public static void main(String[] args) {
         try {
+            Design();
+            System.out.println();
+            int j = 0;
+            while (j < 2) {
+               
+                System.out.println("|*"+"                                                                                                |* ");
+                j++;
+                
+            }
+            
+           System.out.println("|*                             STOCKS MANAGEMENT SYSTEM                                           |*");
+            j = 0;
+            while (j < 2) {                 
+                System.out.println("|*"+"                                                                                                |* ");
+                j++;
+                
+            }
+            Design(); 
+            System.out.println("");
             File userDataFile = new File("userdata/Hostname.txt");
             if (userDataFile.createNewFile()) {
                 getUserData();
@@ -184,6 +231,7 @@ public class Stocks {
                 String name = vaildData.next();
                 System.out.println("Enter your password : ");
                 String pass = vaildData.next();
+                vaildData.close();
                  
                 if(vaild.getname().equals(name) && vaild.gethaxpass().equals(vaild.hashmaker(pass))){
                     System.out.println("Login Successfully");
@@ -191,11 +239,11 @@ public class Stocks {
                     MenuThread.start();
                     
                     
+                    
                 }else{
                     System.out.println("failed Login Plz try again");
                 }
             }
-                
                 
             
         } catch (IOException e) {
