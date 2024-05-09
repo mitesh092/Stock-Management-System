@@ -5,8 +5,7 @@ import java.util.Scanner;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 
 class RegistrationUser {
     private String name, email;
@@ -48,53 +47,93 @@ class RegistrationUser {
 }
 
 class Login {
-    private StringBuilder username ;
-    private StringBuilder haxpass ;
-    public Login(){
-        try{
-            File ReadData =  new File("userdata/Hostname.txt");
-            Scanner Reader =  new Scanner(ReadData);
-            int countLine =  0;
-            
-            
-            while(Reader.hasNextLine()){
-                
-                switch(countLine){
-                    case 1:
-                        String nameFullLine = Reader.nextLine();
-                        StringBuilder name = new StringBuilder();
-                        for(int i = 0; i < nameFullLine.length(); i++){
-                            if(nameFullLine.charAt(i) == ':'){
-                                name.append(nameFullLine.charAt(i));
-                                username = name;
-                            }
-                        }
-                    case 3:
-                        String password = Reader.nextLine();
-                        StringBuilder pass = new StringBuilder();
-                        for(int i = 0; i < password.length(); i++){
-                            if(pass.charAt(i) == '='){
-                                pass.append(password.charAt(i));
-                                haxpass = pass;
-                            }
-                        }
-                        
+    public String hashmaker(String pass){
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(pass.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) {
+                    hexString.append('0');
                 }
-                countLine++;
-                
+                hexString.append(hex);
             }
-        }catch(IOException e){
-            System.out.println("Error in Line number 77");
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
         }
     }
-    
-    public StringBuilder getpass(){
-        return haxpass;
+    public static String gethaxpass(){
+        String filepath = "userdata/Hostname.txt";
+        String passhax = "";
+        int countLine = 0;
+        try {
+            File read = new File(filepath);
+            Scanner sc = new Scanner(read);
+            while(sc.hasNextLine()){
+                String data = sc.nextLine();
+                if(countLine == 3){
+                    passhax = data.substring(23).trim();
+                    break;
+                }
+                countLine ++;
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+        return passhax;
+
     }
-    public StringBuilder getusername(){
-        return username;
+    public String getname(){
+        String filepath = "userdata/Hostname.txt";
+        int countLine = 0;
+        
+
+        String name = "";
+        try {
+            File read = new File(filepath);
+            Scanner sc = new Scanner(read);
+            while(sc.hasNextLine()){
+                String data = sc.nextLine();
+                if(countLine == 1){
+                    name = data.substring(5);
+                    name = name.trim();
+                    
+                }
+                countLine ++;
+            }
+        }catch(IOException e){
+            // empty
+        }
+        return name;
     }
     
+    
+    
+}
+class Menu extends Thread{
+    private String message = "Welcome Back "; 
+    
+
+    public Menu(String name){
+        message += name;
+    }
+    public void run(){
+        int i = 0;
+        while(i < message.length()){
+            System.out.print(message.charAt(i));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+            i++;
+        }
+    }
     
 }
 
@@ -123,7 +162,7 @@ public class Stocks {
         String name = sc.nextLine();
         System.out.print("Enter Your Email: ");
         String email = sc.nextLine();
-        System.out.println("Enter password That contains (Special char, number & alphabetic): ");
+        System.out.print("Enter password That contains (Special char, number & alphabetic): ");
         String password = sc.nextLine();
         sc.close();
         newUser = new RegistrationUser(name, email, password);
@@ -138,24 +177,27 @@ public class Stocks {
                 writer.write("[User Data]\nName: " + newUser.getName() + "\nEmail: " + newUser.getEmail() +"\nPassword Hash[Format] = " + newUser.passwordHash() );
                 writer.close();
 
-            } else {
+            }else {
                 Login vaild = new Login();
                 Scanner vaildData = new Scanner(System.in);
-                System.out.print("Enter Your name");
+                System.out.print("Enter Your name : ");
                 String name = vaildData.next();
-                System.out.println("Enter your password");
+                System.out.println("Enter your password : ");
                 String pass = vaildData.next();
-                
-                if(vaild.getusername().equals(name) && vaild.getpass().equals(hash(pass.replace("=","")))){
-                    System.out.println("login Successfully");
-
+                 
+                if(vaild.getname().equals(name) && vaild.gethaxpass().equals(vaild.hashmaker(pass))){
+                    System.out.println("Login Successfully");
+                    Menu MenuThread = new Menu(name);
+                    MenuThread.start();
+                    
+                    
                 }else{
-                    System.out.println("login Faild");
+                    System.out.println("failed Login Plz try again");
                 }
-
-                
-                
             }
+                
+                
+            
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
