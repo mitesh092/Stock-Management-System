@@ -4,24 +4,8 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-class Intro extends Thread{
-    private String Design =  "*";
-    public void run(){
-        int i = 0; 
-        while(i < 10){
-            System.out.print(Design);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
-            i++;
-            
-        }
-    }
+import java.util.InputMismatchException;
 
-    
-}
 
 
 class RegistrationUser {
@@ -98,6 +82,7 @@ class Login {
                 }
                 countLine ++;
             }
+            sc.close();
 
         } catch (IOException e) {
             System.out.println("Error");
@@ -123,13 +108,26 @@ class Login {
                 }
                 countLine ++;
             }
+            sc.close();
         }catch(IOException e){
-            // empty
+            System.out.println("File : " +  filepath);
+            System.out.println("Data fetching Error : "+ e);
         }
         return name;
     }
     
     
+    
+}
+
+class Option {
+    
+    public void DisplayOption(){
+        String[] option = new String[] {"ADD   ","EDIT  ","VIEW  ","DELETE"};
+        for (int i = 0; i < option.length; i++){
+            System.out.println("*|"+ (i+1) +"."+ option[i] + "        " + "|*");
+        }  
+    }
     
 }
 class Menu extends Thread{
@@ -151,6 +149,11 @@ class Menu extends Thread{
             i++;
         }
     }
+
+    public void menuOptions(){
+        Stocks.Design();
+    }
+    
     
 }
 
@@ -159,6 +162,7 @@ class Menu extends Thread{
 public class Stocks {
     
     private static RegistrationUser newUser;
+    // String password to hash String Conversion Method
     public static String hash(String input) {
         try {
 
@@ -178,7 +182,7 @@ public class Stocks {
     private static void getUserData() {
         Scanner sc = new Scanner(System.in);
         System.out.println("");
-        System.out.print("Enter your name: ");
+        System.out.print("Enter your Username: ");
         String name = sc.nextLine();
         System.out.print("Enter Your Email: ");
         String email = sc.nextLine();
@@ -194,6 +198,26 @@ public class Stocks {
             i++;
         }
     }
+    //overload Design method 
+    public static void Design(int i){
+        System.out.print("*|");
+        int j = 0;
+        while(j < i-1){
+            System.out.print("*");
+            j++;
+        }
+        System.out.println("|*");
+    }
+
+    // Get choice in Main Menu
+    public static int Getchoice(){
+    
+        Scanner Sc = new Scanner(System.in);
+        int Choice = Sc.nextInt();
+
+        return Choice;
+
+    }
 
     
     public static void main(String[] args) {
@@ -208,7 +232,7 @@ public class Stocks {
                 
             }
             
-           System.out.println("|*                             STOCKS MANAGEMENT SYSTEM                                           |*");
+           System.out.println("|*                                  STOCKS MANAGEMENT SYSTEM                                      |*");
             j = 0;
             while (j < 2) {                 
                 System.out.println("|*"+"                                                                                                |* ");
@@ -227,19 +251,107 @@ public class Stocks {
             }else {
                 Login vaild = new Login();
                 Scanner vaildData = new Scanner(System.in);
-                System.out.print("Enter Your name : ");
+                System.out.print("Enter Your Username : ");
                 String name = vaildData.next();
                 System.out.println("Enter your password : ");
                 String pass = vaildData.next();
-                vaildData.close();
+                //vaildData.close();
                  
                 if(vaild.getname().equals(name) && vaild.gethaxpass().equals(vaild.hashmaker(pass))){
                     System.out.println("Login Successfully");
                     Menu MenuThread = new Menu(name);
+                    
+                    MenuThread.menuOptions();
+                    System.out.println();
+                    System.out.print("|*                                     ");
                     MenuThread.start();
-                    
-                    
-                    
+                    try{
+                        MenuThread.sleep(2000);
+                    }catch(InterruptedException I){
+                        System.out.println("MenuThread Error !");
+                    }
+                    System.out.print("                                         *|");
+                    System.out.println();
+                    Design();
+                    try {
+                        MenuThread.sleep(1000);
+                        System.out.println("\n");
+                        Design(17);
+                        Option MainOption =  new Option();
+                        MainOption.DisplayOption();
+                        Design(17);
+                        System.out.println("\n");
+                       
+                        int i = 0;
+                        String message = "--->ENTER YOUR CHOICE :" ;
+                        while(i < message.length()){
+                            System.out.print(message.charAt(i));
+                            try {
+                                MenuThread.sleep(100);
+                            
+                            } catch (InterruptedException e) {
+                                System.out.println(e);
+                            }
+                            i++;
+                        }
+                        
+                        try {
+                            int choice = Getchoice();
+                            switch (choice) {
+                                case 1:
+                                    //call method add data
+                                    break;
+                                case 2:
+                                    //call method Edit data 
+                                    break;
+                                case 3:
+                                    //call method view data 
+                                    break;
+                                case 4:
+                                    //call method delete data
+                                default:
+                                    break;
+                            }
+                            
+                        } catch (InputMismatchException e) {
+                            System.out.println("ERROR : ONLY Numberic Choice allowed ");
+                            i = 0;
+                            message = "--->ENTER YOUR CHOICE : " ;
+                            while(i < message.length()){
+                                System.out.print(message.charAt(i));
+                                try {
+                                    MenuThread.sleep(100);
+                                
+                                } catch (InterruptedException interup) {
+                                    System.out.println(interup);
+                                }
+                                i++;
+                            }
+                            int choice = Getchoice();
+                            switch (choice) {
+                                case 1:
+                                    //call method add data
+                                    break;
+                                case 2:
+                                    //call method Edit data 
+                                    break;
+                                case 3:
+                                    //call method view data 
+                                    break;
+                                case 4:
+                                    //call method delete data
+                                default:
+                                    break;
+                            }
+                            
+                        }
+                        
+                        
+
+                    } catch (InterruptedException  e) {
+                        System.out.println("Error at MenuTread");
+                    }
+              
                 }else{
                     System.out.println("failed Login Plz try again");
                 }
