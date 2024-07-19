@@ -24,7 +24,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/Bunny07joe/stock-management-system.git
+git clone https://github.com/mitesh092/stock-management-system.git
 Navigate to the project directory:
 
 bash
@@ -68,4 +68,4 @@ For any questions or suggestions, please contact:
 
 Mitesh vegad
 Email: miteshvegad148@gmail.com
-GitHub: Bunny07joe
+GitHub: mitesh092
